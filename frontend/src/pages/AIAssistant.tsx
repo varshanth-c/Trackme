@@ -14,7 +14,7 @@ import { Bot, Send, User as UserIcon, Loader2, History, RefreshCw, ArrowLeft } f
 import { useAuth } from "@/hooks/useAuth";
 import { useIsMobile } from "@/hooks/use-mobile"; // Import the mobile detection hook
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://trackme-yeae.onrender.com/api';
 
 // --- Types ---
 interface Message {

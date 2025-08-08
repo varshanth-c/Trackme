@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { User as UserIcon, Building, Settings as SettingsIcon, LogOut, Save, Loader2 } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://trackme-yeae.onrender.com/api';
 
 // Define a type for our rich profile state
 type Profile = {

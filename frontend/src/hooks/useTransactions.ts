@@ -3,7 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth"; // Import your custom auth hook
 
 // The base URL of your backend API
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://trackme-yeae.onrender.com/api';
 
 // --- 1. Interfaces matching your backend schema ---
 export interface Transaction {

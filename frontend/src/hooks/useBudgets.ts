@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth"; // Import your custom auth hook
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://trackme-yeae.onrender.com/api';
 
 // --- Main Interface & Types ---
 export interface Budget {

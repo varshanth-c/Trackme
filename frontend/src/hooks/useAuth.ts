@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
 // The base URL of your backend API
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://trackme-yeae.onrender.com/api';
 
 /**
  * A custom hook to manage user authentication with your Express backend.
