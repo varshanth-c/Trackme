@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { MainLayout } from "@/components/MainLayout";
 import { AuthGuard } from "@/components/AuthGuard";
-import { AuthProvider } from "@/contexts/AuthContext";
+
 // Page Imports
 import Dashboard from "./pages/Dashboard";
 import AddTransaction from "./pages/AddTransaction";
@@ -28,7 +28,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-         <AuthProvider>
+        
           <AuthGuard>
             <MainLayout>
               <Routes>
@@ -53,7 +53,7 @@ const App = () => (
               </Routes>
             </MainLayout>
           </AuthGuard>
-          </AuthProvider>
+          
         </BrowserRouter>
       </TooltipProvider>
     </LanguageProvider>

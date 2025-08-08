@@ -110,6 +110,7 @@ export function useAuth() {
     localStorage.removeItem('authUser');
     setUser(null);
     setToken(null);
+    window.location.reload();
   };
 
   return {
