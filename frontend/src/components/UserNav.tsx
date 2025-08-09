@@ -19,7 +19,7 @@ export function UserNav() {
   };
   
   // A helper function to get initials from a full name
-  const getInitials = (name: string | null | undefined) => (name || '').split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
+  const getInitials = (name: string | null) => (name ? name.charAt(0).toUpperCase() : 'U');
 
   // If the user data hasn't been loaded yet by the hook, don't render anything.
   // The AuthGuard ensures this component only renders for authenticated users anyway.

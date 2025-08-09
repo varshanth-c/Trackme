@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useNavigate, useMatch, useParams } from "react-router-dom";
+import { useNavigate, useMatch } from "react-router-dom";
 import { format, isToday, isYesterday, startOfMonth, endOfMonth, subMonths, startOfYear, endOfYear } from "date-fns";
 
 // UI Components
@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 
 // Icons
-import { Search, Filter, TrendingUp, TrendingDown, Edit, Trash2, Loader2, Plus, Briefcase, Landmark, Wallet, PackageOpen, Calendar, Tag, FileText, StickyNote } from "lucide-react";
+import { Search, Filter, TrendingUp, TrendingDown, Edit, Trash2, Loader2, Plus, Briefcase, Wallet, PackageOpen, Calendar, Tag, FileText, StickyNote } from "lucide-react";
 
 // Custom Hooks and Types
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -28,9 +28,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 // --- Constants ---
 const typeAttributes = {
-  income: { icon: TrendingUp, color: "text-green-500", badge: "bg-green-500/10 text-green-700 border-green-500/20" },
+  income: { icon: TrendingUp, color: "text-blue-500", badge: "bg-blue-500/10 text-blue-700 border-blue-500/20" },
   expense: { icon: TrendingDown, color: "text-red-500", badge: "bg-red-500/10 text-red-700 border-red-500/20" },
-  investment: { icon: Briefcase, color: "text-blue-500", badge: "bg-blue-500/10 text-blue-700 border-blue-500/20" },
+  investment: { icon: Briefcase, color: "text-slate-500", badge: "bg-slate-500/10 text-slate-700 border-slate-500/20" },
 };
 const transactionTypes = [
   { value: "income", label: "income" }, { value: "expense", label: "expense" }, { value: "investment", label: "investment" },
@@ -52,8 +52,9 @@ export default function TransactionsPage() {
   const isEditMode = Boolean(editMatch);
   const { id: transactionId } = editMatch?.params || {};
 
+  // ✅ CHANGED: Removed max-w-4xl and mx-auto, using padding for spacing
   return (
-    <div className="max-w-4xl mx-auto space-y-8 p-4 md:p-6">
+    <div className="space-y-8 px-4 sm:px-6 lg:px-8">
       {isEditMode ? (
         <TransactionEditForm key={transactionId} transactionId={transactionId!} />
       ) : (
@@ -83,6 +84,7 @@ function TransactionListPage() {
     if (timePeriod === 'this_month') { [startDate, endDate] = [startOfMonth(now), endOfMonth(now)]; }
     else if (timePeriod === 'last_month') { const last = subMonths(now, 1); [startDate, endDate] = [startOfMonth(last), endOfMonth(last)]; }
     else if (timePeriod === 'this_year') { [startDate, endDate] = [startOfYear(now), endOfYear(now)]; }
+    
     return transactions.filter(tx => {
       const txDate = new Date(tx.date as string);
       const matchesDate = !startDate || !endDate || (txDate >= startDate && txDate <= endDate);
@@ -120,25 +122,28 @@ function TransactionListPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div><h1 className="text-3xl font-bold">{t("transactions")}</h1><p className="text-muted-foreground">{t("manage_transactions_subtitle", { defaultValue: "A comprehensive overview of your financial activities." })}</p></div>
+        <div><h1 className="text-2xl md:text-3xl font-bold">{t("Transactions")}</h1><p className="text-muted-foreground">{t("manage transactions subtitle", { defaultValue: "A comprehensive overview of your financial activities." })}</p></div>
         <Button onClick={() => navigate("/add-transaction")}><Plus className="w-4 h-4 mr-2" />{t("add_transaction")}</Button>
       </div>
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <StatCard title="Total Income" value={summary.income} type="income" icon={TrendingUp} />
-        <StatCard title="Revenue (Income - Expense)" value={summary.revenue} type="net" icon={Wallet} />
+        <StatCard title="Revenue" value={summary.revenue} type="net" icon={Wallet} />
         <StatCard title="Total Investment" value={summary.investment} type="investment" icon={Briefcase} />
-        <StatCard title="Net Savings (Revenue - Invest)" value={summary.saving} type="saving" icon={Landmark} />
+        <StatCard title="Net Savings" value={summary.saving} type="saving" icon={Wallet} />
       </div>
+
       <Card>
         <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Filter className="w-5 h-5 text-primary" />{t("filters_and_search")}</CardTitle></CardHeader>
         <CardContent>
           <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-3'}`}>
-            <div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input placeholder={t("search_description_etc")} className="pl-10" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
+            <div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input placeholder={t("search_by_description", { defaultValue: "Search by description..."})} className="pl-10" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
             <Select value={filterType} onValueChange={(v) => setFilterType(v as any)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{["all", ...transactionTypes.map(t => t.value)].map(v => <SelectItem key={v} value={v}>{t(v) || "All Types"}</SelectItem>)}</SelectContent></Select>
             <Select value={timePeriod} onValueChange={setTimePeriod}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{[{v:"this_month",l:"This Month"},{v:"last_month",l:"Last Month"},{v:"this_year",l:"This Year"},{v:"all_time",l:"All Time"}].map(o=><SelectItem key={o.v} value={o.v}>{o.l}</SelectItem>)}</SelectContent></Select>
           </div>
         </CardContent>
       </Card>
+      
       <div className="space-y-6">
         {!transactions?.length ? <EmptyState /> : Object.keys(groupedTransactions).length === 0 ? <NoResultsState /> :
           Object.entries(groupedTransactions).map(([date, txs]) => (
@@ -158,7 +163,6 @@ function TransactionListPage() {
 // =================================================================
 function TransactionEditForm({ transactionId }: { transactionId: string }) {
   const { t } = useLanguage();
-  const { toast } = useToast();
   const navigate = useNavigate();
   const { data: transactions } = useGetTransactions();
   const updateTransaction = useUpdateTransaction();
@@ -175,10 +179,9 @@ function TransactionEditForm({ transactionId }: { transactionId: string }) {
     }
   }, [transactions, transactionId]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { name: string; value: string }) => {
-    const name = 'id' in e.target ? e.target.id : e.name;
-    const value = 'value' in e.target ? e.target.value : e.value;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
   };
 
   const handleSelectChange = (name: 'type' | 'category', value: string) => {
@@ -197,7 +200,7 @@ function TransactionEditForm({ transactionId }: { transactionId: string }) {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold">{t("edit_transaction")}</h1><p className="text-muted-foreground">Update the details of your financial transaction.</p>
+      <h1 className="text-2xl md:text-3xl font-bold">{t("edit_transaction")}</h1><p className="text-muted-foreground">Update the details of your financial transaction.</p>
       <Card className="mt-6">
         <CardHeader><CardTitle className="flex items-center gap-2"><Edit className="w-5 h-5 text-primary" />Edit Transaction</CardTitle></CardHeader>
         <CardContent>
@@ -225,8 +228,12 @@ function TransactionEditForm({ transactionId }: { transactionId: string }) {
 
 // --- Helper Sub-components ---
 const StatCard = ({ title, value, type, icon: Icon }: { title: string, value: number, type: string, icon: React.ElementType }) => {
-  const color = type === 'income' ? 'text-green-500' : type === 'investment' ? 'text-blue-500' : value >= 0 ? 'text-green-500' : 'text-red-500';
-  return <Card><CardHeader className="flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium">{title}</CardTitle><Icon className="h-5 w-5 text-muted-foreground" /></CardHeader><CardContent><div className={`text-2xl font-bold ${color}`}>{value.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</div></CardContent></Card>;
+  // ✅ CHANGED: Standardized color logic to use neutral gray for positive values
+  const color = type === 'income' ? 'text-slate-800' 
+              : type === 'investment' ? 'text-slate-500' 
+              : value >= 0 ? 'text-slate-800' 
+              : 'text-red-500';
+  return <Card><CardHeader className="flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium">{title}</CardTitle><Icon className="h-5 w-5 text-muted-foreground" /></CardHeader><CardContent><div className={`text-xl sm:text-2xl font-bold ${color}`}>{value.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</div></CardContent></Card>;
 };
 
 const TransactionItem = ({ transaction: tx, onDelete, isDeleting }: { transaction: Transaction, onDelete: (id: string) => void, isDeleting: boolean }) => {

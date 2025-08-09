@@ -1,13 +1,13 @@
 import { useState, useMemo } from "react";
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, subWeeks, subMonths, subYears, parseISO } from "date-fns";
-import { useIsMobile } from "@/hooks/use-mobile"; // For mobile-specific logic
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // UI Components and Icons
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Sigma, Landmark, Wallet, TrendingUp, Loader2, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Sigma, Landmark, Wallet, TrendingUp, TrendingDown, Loader2, ArrowUpRight, ArrowDownRight } from "lucide-react"; // ✅ Import TrendingDown
 
-// Recharts for charts - Now using AreaChart
+// Recharts for charts
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 // Custom Hooks and Types
@@ -96,13 +96,11 @@ export default function SmartDashboard() {
   }
   
   return (
-    // Responsive spacing for the entire page
     <div className="space-y-4 md:space-y-6">
-      {/* Responsive header: stacks on mobile, row on desktop */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold">{t("dashboard")}</h1>
-          <p className="text-muted-foreground">{t("your_financial_overview_for_this")} {t(timePeriod)}</p>
+          <p className="text-muted-foreground">{t("your financial overview for this ")} {t(timePeriod)}</p>
         </div>
         <ToggleGroup type="single" value={timePeriod} onValueChange={(value: "week" | "month" | "year") => value && setTimePeriod(value)} aria-label="Select Time Period">
           <ToggleGroupItem value="week" aria-label="This Week">{t('week')}</ToggleGroupItem>
@@ -113,7 +111,6 @@ export default function SmartDashboard() {
 
       {dashboardData ? (
         <>
-          {/* Responsive grid for stats: 2 columns on mobile, 4 on desktop */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <StatCard title="Revenue" value={dashboardData.stats.revenue.value} change={dashboardData.stats.revenue.change} icon={Sigma} />
             <StatCard title="Net Savings" value={dashboardData.stats.netSavings.value} change={dashboardData.stats.netSavings.change} icon={Landmark} />
@@ -121,7 +118,6 @@ export default function SmartDashboard() {
             <StatCard title="Total Income" value={dashboardData.stats.income.value} change={dashboardData.stats.income.change} icon={TrendingUp} isSubtle />
           </div>
 
-          {/* New AreaChart */}
           <Card>
             <CardHeader>
               <CardTitle>Performance Trend</CardTitle>
@@ -130,7 +126,6 @@ export default function SmartDashboard() {
             <CardContent className="pl-2">
               <ResponsiveContainer width="100%" height={350}>
                 <AreaChart data={dashboardData.chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                  {/* Defining gradients for a more beautiful chart fill */}
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
@@ -178,7 +173,6 @@ export default function SmartDashboard() {
 
 // --- Helper and Custom Components ---
 
-// StatCard remains largely the same but is now inside a responsive grid
 function StatCard({ title, value, change, icon: Icon, isSubtle = false }: { title: string; value: number; change: number; icon: React.ElementType, isSubtle?: boolean }) {
   const isPositive = change >= 0;
   return (
@@ -190,7 +184,8 @@ function StatCard({ title, value, change, icon: Icon, isSubtle = false }: { titl
       <CardContent>
         <div className="text-2xl font-bold">{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value)}</div>
         {isFinite(change) && (
-          <p className={`text-xs ${isPositive ? 'text-emerald-500' : 'text-red-500'} flex items-center`}>
+          // ✅ CHANGED: Replaced 'text-emerald-500' with 'text-blue-500' for a neutral, positive indicator.
+          <p className={`text-xs ${isPositive ? 'text-blue-500' : 'text-red-500'} flex items-center`}>
             {isPositive ? <TrendingUp className="w-3 h-3 mr-1" /> : <TrendingDown className="w-3 h-3 mr-1" />}
             {isPositive ? '+' : ''}{change.toFixed(1)}% vs last period
           </p>
@@ -200,22 +195,26 @@ function StatCard({ title, value, change, icon: Icon, isSubtle = false }: { titl
   );
 }
 
-// TransactionRow layout is simple and naturally responsive
 function TransactionRow({ transaction: tx }: { transaction: Transaction }) {
   const isIncome = tx.type === 'income';
-  const color = isIncome ? 'text-green-500' : tx.type === 'expense' ? 'text-red-500' : 'text-blue-500';
-  const Icon = isIncome ? ArrowUpRight : ArrowDownRight;
+  // ✅ CHANGED: Replaced 'text-green-500' with 'text-blue-500' and standardized investment color.
+  const color = isIncome ? 'text-blue-500' : tx.type === 'expense' ? 'text-red-500' : 'text-slate-500';
+  const bgColor = isIncome ? 'bg-blue-500/10' : tx.type === 'expense' ? 'bg-red-500/10' : 'bg-slate-500/10';
+  const Icon = tx.type === 'expense' ? ArrowDownRight : ArrowUpRight;
   const amount = parseFloat(tx.amount as string);
+
   return (
     <div className="flex items-center gap-4">
-      <div className={`p-2 rounded-full ${color}/10 hidden sm:flex`}><Icon className={`w-5 h-5 ${color}`} /></div>
+      <div className={`p-2 rounded-full ${bgColor} hidden sm:flex`}><Icon className={`w-5 h-5 ${color}`} /></div>
       <div className="flex-grow"><p className="font-semibold">{tx.description}</p><p className="text-sm text-muted-foreground">{tx.category}</p></div>
-      <div className="text-right flex-shrink-0"><p className={`font-bold ${color}`}>{isIncome ? '+' : '-'}{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount)}</p><p className="text-sm text-muted-foreground">{format(parseISO(tx.date as string), 'MMM d')}</p></div>
+      <div className="text-right flex-shrink-0">
+        <p className={`font-bold ${color}`}>{isIncome ? '+' : '-'}{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount)}</p>
+        <p className="text-sm text-muted-foreground">{format(parseISO(tx.date as string), 'MMM d')}</p>
+      </div>
     </div>
   );
 }
 
-// A custom tooltip for a much better user experience on the chart
 function CustomTooltip({ active, payload, label }: any) {
     if (active && payload && payload.length) {
         return (

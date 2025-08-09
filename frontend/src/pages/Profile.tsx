@@ -94,16 +94,17 @@ export default function Profile() {
     }
   };
   
-  const getInitials = (name: string | null) => (name || '').split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
+  // ✅ CHANGED: This function now only takes the first character of the full name.
+  const getInitials = (name: string | null) => (name ? name.charAt(0).toUpperCase() : 'U');
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin" /></div>;
   }
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto p-4 md:p-0">
+    <div className="space-y-8 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-            <h1 className="text-3xl font-bold">Manage Profile</h1>
+            <h1 className="text-2xl md:text-3xl font-bold">Manage Profile</h1>
             <Button onClick={handleUpdateProfile} disabled={isSaving} className="w-full sm:w-auto">
                 {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                 Save All Changes
@@ -121,7 +122,7 @@ export default function Profile() {
                 <div className="space-y-2"><Label htmlFor="email">Email</Label><Input id="email" value={user?.email || ''} disabled /></div>
                 <div className="space-y-2"><Label htmlFor="full_name">Full Name</Label><Input id="full_name" value={profile.full_name || ''} onChange={handleInputChange} /></div>
                 <div className="space-y-2"><Label htmlFor="phone_number">Phone Number</Label><Input id="phone_number" value={profile.phone_number || ''} onChange={handleInputChange} /></div>
-                <div className="space-y-2"><Label htmlFor="vendorspecialty">Specialty (e.g., Finance, Marketing)</Label><Input id="vendorspecialty" value={profile.specialty || ''} onChange={handleInputChange} /></div>
+                <div className="space-y-2"><Label htmlFor="specialty">Specialty (e.g., Finance, Marketing)</Label><Input id="specialty" value={profile.specialty || ''} onChange={handleInputChange} /></div>
             </CardContent>
         </Card>
         
@@ -140,14 +141,14 @@ export default function Profile() {
             <CardHeader><CardTitle className="flex items-center gap-2"><SettingsIcon /> Preferences & Access</CardTitle></CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2"><Label htmlFor="role">User Role</Label>
-                   <Select value={profile.role || 'vendor'} onValueChange={(value) => handleSelectChange('role', value)}>
-                       <SelectTrigger><SelectValue /></SelectTrigger>
-                       <SelectContent>
-                           <SelectItem value="admin">Administrator</SelectItem>
-                           <SelectItem value="staff">Staff</SelectItem>
-                           <SelectItem value="vendor">Vendor</SelectItem>
-                       </SelectContent>
-                   </Select>
+                    <Select value={profile.role || 'vendor'} onValueChange={(value) => handleSelectChange('role', value)}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="admin">Administrator</SelectItem>
+                            <SelectItem value="staff">Staff</SelectItem>
+                            <SelectItem value="vendor">Vendor</SelectItem>
+                        </SelectContent>
+                    </Select>
                  </div>
                  <div className="space-y-2"><Label htmlFor="preferred_language">Preferred Language</Label>
                      <Select value={profile.preferred_language || 'en'} onValueChange={(value) => handleSelectChange('preferred_language', value)}>
@@ -162,7 +163,7 @@ export default function Profile() {
             </CardContent>
              <Separator className="my-4"/>
              <CardContent>
-                <Button variant="outline" onClick={signOut}><LogOut className="w-4 h-4 mr-2" /> Log Out</Button>
+                 <Button variant="outline" onClick={signOut}><LogOut className="w-4 h-4 mr-2" /> Log Out</Button>
              </CardContent>
         </Card>
     </div>

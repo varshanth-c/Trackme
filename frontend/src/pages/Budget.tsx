@@ -90,12 +90,12 @@ export default function IntelligentBudgetingAssistant() {
     <div className="space-y-6 p-4 md:p-0">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
         <div>
-          <h1 className="text-3xl font-bold">{t("budget_assistant")}</h1>
-          <p className="text-muted-foreground">{t("proactive_spending_insights_and_alerts")}</p>
+          <h1 className="text-3xl font-bold">{t("Budget Manager")}</h1>
+          <p className="text-muted-foreground">{t("proactive spending insights and alerts")}</p>
         </div>
         <Button onClick={() => setShowAddForm(!showAddForm)} className="w-full sm:w-auto">
           <PlusCircle className="w-4 h-4 mr-2" />
-          {showAddForm ? t("cancel") : t("add_budget")}
+          {showAddForm ? t("cancel") : t("add budget")}
         </Button>
       </div>
 

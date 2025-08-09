@@ -10,52 +10,55 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TrendingUp, TrendingDown, Landmark, Briefcase, Wallet, Target, Bot, AlertTriangle, PieChart as PieIcon, Loader2, BarChart3, LineChart as LineChartIcon, Sigma } from "lucide-react";
 
 // Charting Library
-import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart as RechartsLineChart, Pie, PieChart as RechartsPieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell, ComposedChart, Sector } from "recharts";
+import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart as RechartsLineChart, Pie, PieChart as RechartsPieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell, ComposedChart } from "recharts";
 
 // Custom Hooks
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useGetTransactions, Transaction } from "@/hooks/useTransactions";
-import { useIsMobile } from "@/hooks/use-mobile"; // Import the mobile hook
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // --- Custom Hook for Centralized Data Logic ---
 const useDashboardData = ({ transactions, period }: { transactions: Transaction[] | undefined; period: string }) => {
   return useMemo(() => {
-    if (!transactions || transactions.length === 0) return null;
+    if (!transactions) return null;
 
     const now = new Date();
     let startDate: Date;
     let endDate: Date = endOfDay(now);
 
+    // Determine the date range based on the selected period
     switch (period) {
-        case 'last_7_days':
-            startDate = startOfDay(subDays(now, 6));
-            break;
-        case 'last_30_days':
-            startDate = startOfDay(subDays(now, 29));
-            break;
-        case 'this_month':
-            startDate = startOfMonth(now);
-            endDate = endOfMonth(now);
-            break;
-        case 'last_month':
-            const lastMonthStart = startOfMonth(subMonths(now, 1));
-            startDate = lastMonthStart;
-            endDate = endOfMonth(lastMonthStart);
-            break;
-        default: // 'this_year'
-            startDate = startOfYear(now);
-            endDate = endOfYear(now);
+      case 'last_7_days':
+        startDate = startOfDay(subDays(now, 6));
+        break;
+      case 'last_30_days':
+        startDate = startOfDay(subDays(now, 29));
+        break;
+      case 'this_month':
+        startDate = startOfMonth(now);
+        endDate = endOfMonth(now);
+        break;
+      case 'last_month':
+        const lastMonthStart = startOfMonth(subMonths(now, 1));
+        startDate = lastMonthStart;
+        endDate = endOfMonth(lastMonthStart);
+        break;
+      default: // 'this_year'
+        startDate = startOfYear(now);
+        endDate = endOfYear(now);
     }
 
     const filteredTx = transactions.filter(tx => {
-        const txDate = parseISO(tx.date as string);
-        return txDate >= startDate && txDate <= endDate;
+      const txDate = parseISO(tx.date as string);
+      return txDate >= startDate && txDate <= endDate;
     });
 
-    if (filteredTx.length < 3) return { isEmpty: true };
+    // ✅ FIX: Changed condition to check for any transactions, not an arbitrary number.
+    if (filteredTx.length === 0) return { isEmpty: true };
 
     const isShortPeriod = period === 'last_7_days' || period === 'last_30_days';
     const timeFormat = isShortPeriod ? 'MMM d' : 'MMM';
+    
     const groupedData = filteredTx.reduce((acc, tx) => {
       const key = format(parseISO(tx.date as string), timeFormat);
       if (!acc[key]) {
@@ -69,9 +72,9 @@ const useDashboardData = ({ transactions, period }: { transactions: Transaction[
     }, {} as Record<string, { name: string; income: number; expense: number; investment: number }>);
     
     const chartData = Object.values(groupedData).map(d => {
-        const revenue = d.income - d.expense;
-        const profitMargin = d.income > 0 ? (revenue / d.income) * 100 : 0;
-        return { ...d, revenue, profitMargin };
+      const revenue = d.income - d.expense;
+      const profitMargin = d.income > 0 ? (revenue / d.income) * 100 : 0;
+      return { ...d, revenue, profitMargin };
     });
 
     const totalIncome = chartData.reduce((sum, d) => sum + d.income, 0);
@@ -106,12 +109,13 @@ export default function VendorAnalyticsDashboard() {
 
   if (isLoading) return <div className="flex items-center justify-center h-96"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   
+  // ✅ FIX: Changed main container to use consistent padding for better full-screen layout.
   return (
-    <div className="space-y-6 p-4 md:p-0">
+    <div className="space-y-6 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">{t("vendor_analytics")}</h1>
-          <p className="text-muted-foreground">{t("deep_dive_into_your_business_performance")}</p>
+          <h1 className="text-2xl md:text-3xl font-bold">{t("Vendor analytics")}</h1>
+          <p className="text-muted-foreground">{t("deep dive into your business performance")}</p>
         </div>
         <div className="flex gap-2">
             <Select value={period} onValueChange={setPeriod}>
@@ -131,14 +135,13 @@ export default function VendorAnalyticsDashboard() {
           <NoDataForPeriod />
       ) : (
         <>
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
               <StatCard title="Total Revenue" value={dashboardData.totalRevenue} icon={TrendingUp} />
               <StatCard title="Total Investment" value={dashboardData.totalInvestment} icon={Briefcase} />
               <StatCard title="Net Savings" value={dashboardData.netSavings} icon={Landmark} />
-              <StatCard title="Total Expenses" value={dashboardData.totalExpense} icon={TrendingDown} isSubtle />
+              <StatCard title="Total Expenses" value={dashboardData.totalExpense} icon={TrendingDown} isNegative />
           </div>
 
-          {/* ✅ RESPONSIVE CHART LAYOUT */}
           <div className={`grid gap-6 ${isMobile ? 'grid-cols-1' : 'lg:grid-cols-3'}`}>
               <Card className={isMobile ? '' : 'lg:col-span-2'}>
                   <CardHeader>
@@ -247,76 +250,51 @@ function ProfitabilityLineChart({ data }: { data: any[] }) {
     );
 }
 
-// ✅ FIX: A more robust custom label renderer for the Pie Chart
-const renderCustomizedLabel = (props: any) => {
-    const { cx, cy, midAngle, outerRadius, fill, percent, name } = props;
-    const RADIAN = Math.PI / 180;
-    // This is a bit of math to calculate the position of the label line
-    const sin = Math.sin(-RADIAN * midAngle);
-    const cos = Math.cos(-RADIAN * midAngle);
-    const sx = cx + (outerRadius + 10) * cos;
-    const sy = cy + (outerRadius + 10) * sin;
-    const mx = cx + (outerRadius + 30) * cos;
-    const my = cy + (outerRadius + 30) * sin;
-    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-    const ey = my;
-    const textAnchor = cos >= 0 ? 'start' : 'end';
-
-    return (
-        <g>
-            <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
-            <circle cx={sx} cy={sy} r={2} fill={fill} stroke="none" />
-            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="hsl(var(--foreground))" fontSize={12}>
-                {`${name} (${(percent * 100).toFixed(0)}%)`}
-            </text>
-        </g>
-    );
-};
-
 function ExpenseDonutChart({ data }: { data: Record<string, number> }) {
     const chartData = useMemo(() => Object.entries(data).map(([name, value]) => ({ name, value })), [data]);
     const COLORS = Array.from({ length: chartData.length }, (_, i) => `hsl(var(--chart-${i + 1}))`);
     return(
         <ResponsiveContainer width="100%" height={350}>
-  <RechartsPieChart margin={{ top: 20, right: 80, bottom: 20, left: 20 }}>
-    <Pie 
-      data={chartData} 
-      dataKey="value" 
-      nameKey="name" 
-      cx="50%" 
-      cy="50%" 
-      innerRadius={70} 
-      outerRadius={90} 
-      paddingAngle={5} 
-      // labelLine
-      // label={renderCustomizedLabel}
-    >
-      {chartData.map((entry, index) => (
-        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-      ))}
-    </Pie>
-    <Tooltip formatter={(value: number) => `₹${value.toLocaleString()}`} />
-  </RechartsPieChart>
-</ResponsiveContainer>
+            <RechartsPieChart>
+                <Pie 
+                    data={chartData} 
+                    dataKey="value" 
+                    nameKey="name" 
+                    cx="50%" 
+                    cy="50%" 
+                    innerRadius={60} 
+                    outerRadius={80} 
+                    paddingAngle={5} 
+                >
+                    {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                </Pie>
+                <Tooltip formatter={(value: number) => `₹${value.toLocaleString()}`} />
+                {/* ✅ FIX: Added a legend for better readability, especially on mobile. */}
+                <Legend iconSize={10} />
+            </RechartsPieChart>
+        </ResponsiveContainer>
     );
 }
 
 
 // --- Helper UI Components ---
-function StatCard({ title, value, icon: Icon, isSubtle = false }: { title: string; value: number; icon: React.ElementType; isSubtle?: boolean }) {
-    const colorClass = value >= 0 ? 'text-green-600' : 'text-red-600';
+function StatCard({ title, value, icon: Icon, isNegative = false }: { title: string; value: number; icon: React.ElementType; isNegative?: boolean }) {
+    // ✅ FIX: Standardized colors to a neutral foreground for positive values and red for negative.
+    const colorClass = isNegative ? 'text-red-600' : 'text-foreground';
     return (
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className={`text-sm font-medium ${isSubtle ? 'text-muted-foreground' : ''}`}>{title}</CardTitle>
-          <Icon className={`h-4 w-4 text-muted-foreground`} />
-        </CardHeader>
-        <CardContent>
-          <div className={`text-2xl font-bold ${isSubtle ? '' : colorClass}`}>
-             {value < 0 ? `-₹${Math.abs(value).toLocaleString()}` : `₹${value.toLocaleString()}`}
-          </div>
-        </CardContent>
-      </Card>
+        <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{title}</CardTitle>
+                <Icon className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+                <div className={`text-2xl font-bold ${colorClass}`}>
+                    {value < 0 ? `-₹${Math.abs(value).toLocaleString()}` : `₹${value.toLocaleString()}`}
+                </div>
+            </CardContent>
+        </Card>
     );
 }
 

@@ -16,15 +16,14 @@ import { Plus, TrendingUp, TrendingDown, Wallet, ArrowLeft } from "lucide-react"
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { useAddTransaction, Transaction, NewTransaction } from "@/hooks/useTransactions";
-// ✅ 1. IMPORT THE HOOK
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
 // --- Constants ---
 const transactionTypes = [
-  { value: "income", label: "income", icon: TrendingUp, color: "text-green-500" },
+  { value: "income", label: "income", icon: TrendingUp, color: "text-blue-500" },
   { value: "expense", label: "expense", icon: TrendingDown, color: "text-red-500" },
-  { value: "investment", label: "investment", icon: Wallet, color: "text-blue-500" },
+  { value: "investment", label: "investment", icon: Wallet, color: "text-slate-500" },
 ];
 
 const categories = {
@@ -51,8 +50,6 @@ export default function AddTransaction() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const addTransaction = useAddTransaction();
-  
-  // ✅ 2. INITIALIZE THE HOOK
   const isMobile = useIsMobile();
 
   const [formData, setFormData] = useState(initialFormData);
@@ -107,8 +104,6 @@ export default function AddTransaction() {
     }
   };
   
-  // ✅ 3. USE THE HOOK'S VALUE TO CHANGE THE UI
-  // On mobile, the button will just say "Add". On desktop, it will be more descriptive, like "Add Income".
   const getButtonText = () => {
     const baseText = t("add");
     if (isMobile) {
@@ -117,8 +112,9 @@ export default function AddTransaction() {
     return formData.type ? `${baseText} ${t(formData.type)}` : baseText;
   };
 
+  // ✅ CHANGED: Removed max-w-4xl and mx-auto, using padding for spacing
   return (
-    <div className="max-w-4xl mx-auto space-y-6 p-4 sm:p-6">
+    <div className="space-y-6 px-4 sm:px-6 lg:px-8">
       <div className="flex items-center gap-4">
         <Button variant="outline" size="icon" className="flex-shrink-0" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4" />
@@ -203,7 +199,6 @@ export default function AddTransaction() {
             <div className="flex flex-col sm:flex-row-reverse gap-3 pt-4">
               <Button type="submit" className="sm:flex-1" disabled={addTransaction.isPending}>
                 <Plus className="w-4 h-4 mr-2" />
-                {/* The dynamic button text is rendered here */}
                 {getButtonText()}
               </Button>
               <Button type="button" variant="outline" className="sm:flex-1" onClick={() => navigate("/transactions")}>
