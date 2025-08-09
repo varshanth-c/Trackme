@@ -72,8 +72,10 @@ export function AuthGuard({ children }: AuthGuardProps) {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <DollarSign className="w-8 h-8 text-primary" />
-              <h1 className="text-2xl font-bold">Smart Vendor</h1>
+              <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
+                <img src="/favicon6.svg" alt="Rupee Coin Logo" width="100" />
+              </div>
+              <h1 className="text-2xl font-bold">Trackme</h1>
             </div>
             <CardTitle>{isLogin ? "Welcome Back" : "Create Account"}</CardTitle>
             <p className="text-muted-foreground">
