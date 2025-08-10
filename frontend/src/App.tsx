@@ -28,34 +28,30 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-        <Routes>
-         <Route path="/verify-email/:token" element={<VerificationPage />} />
-          <Route path="/*" element={
-          <AuthGuard>
-            <MainLayout>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/add-transaction" element={<AddTransaction />} />
+          <Routes>
+            {/* --- Public route that does not require login --- */}
+            <Route path="/verify-email/:token" element={<VerificationPage />} />
 
-               
-                <Route path="/transactions" element={<Transactions />} />
-
-              
-                <Route path="/transactions/edit/:id" element={<Transactions />} />
-                <Route path="/budget" element={<Budget />} />
-                <Route path="/insights" element={<Insights />} />
-                <Route path="/ai-assistant" element={<AIAssistant />} />
-                <Route path="/settings" element={<Settings />} />
-                
-                
-                <Route path="/profile" element={<Profile />} />
-
-                
-                <Route path="*" element={<NotFound />} />
-              
-            </MainLayout>
-            
-          </AuthGuard>
-          } />
+            {/* --- Protected routes that require login --- */}
+            <Route path="/*" element={
+              <AuthGuard>
+                <MainLayout>
+                  {/* FIX: Wrap the nested routes in a <Routes> component */}
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/add-transaction" element={<AddTransaction />} />
+                    <Route path="/transactions" element={<Transactions />} />
+                    <Route path="/transactions/edit/:id" element={<Transactions />} />
+                    <Route path="/budget" element={<Budget />} />
+                    <Route path="/insights" element={<Insights />} />
+                    <Route path="/ai-assistant" element={<AIAssistant />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </MainLayout>
+              </AuthGuard>
+            } />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
