@@ -6,6 +6,7 @@ import {
   Bot,
   Settings,
   Receipt,
+  ReceiptIndianRupee,
   Target,
   User as UserIcon,
 } from "lucide-react";
@@ -29,7 +30,7 @@ import { Separator } from "@/components/ui/separator";
 const mainItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Add Transaction", url: "/add-transaction", icon: Plus },
-  { title: "Transactions", url: "/transactions", icon: Receipt },
+  { title: "Transactions", url: "/transactions", icon: ReceiptIndianRupee },
   { title: "Budget Manager", url: "/budget", icon: Target },
   { title: "Insights", url: "/insights", icon: TrendingUp },
   { title: "AI Assistant", url: "/ai-assistant", icon: Bot },
@@ -58,12 +59,12 @@ export function AppSidebar() {
         <div className="p-4 border-b">
           {!collapsed && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-300 flex items-center justify-center">
+              <div className="w-8 h-8 overflow-hidden flex items-center justify-center">
                 {/* ✅ CHANGED: Using an absolute path for the logo is more robust. */}
-                <img src="/favicon6.svg" alt="Rupee Coin Logo" width="100" />
+                <img src="/favicon1.svg" alt="Rupee Coin Logo" width="100" />
               </div>
               <div>
-                <h2 className="font-bold text-lg">Trackme</h2>
+                <h2 className="font-bold text-lg">Track₹</h2>
                 <p className="text-xs text-muted-foreground">
                   Financial Dashboard
                 </p>
