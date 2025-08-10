@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+// 1. Import useNavigate
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 const VerificationPage = () => {
-  // 1. Get the token from the URL using useParams hook
   const { token } = useParams();
+  // 2. Initialize useNavigate
+  const navigate = useNavigate();
 
-  // 2. State variables to manage the UI
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [message, setMessage] = useState('Verifying your email, please wait...');
 
-  // 3. useEffect to run the verification logic when the component mounts
   useEffect(() => {
     const verifyEmailToken = async () => {
       if (!token) {
@@ -21,40 +21,41 @@ const VerificationPage = () => {
       }
 
       try {
-        // IMPORTANT: Use an environment variable for your API URL
         const apiUrl = `https://trackme-yeae.onrender.com/api/auth/verify-email/${token}`;
         
         const response = await fetch(apiUrl);
-        // --- ADD THIS LOGGING BLOCK ---
-  console.log("Response Status:", response.status);
-  const responseText = await response.text(); // Get response as text first
-  console.log("Raw Response Text:", responseText);
-  // --- END LOGGING BLOCK ---
-        const data = await response.json();
+        
+        // FIX: Read the body once as text
+        const responseText = await response.text();
+        
+        // Then, parse the text into a JSON object
+        const data = JSON.parse(responseText);
 
         if (!response.ok) {
-          // Throw an error if the server response is not successful (e.g., 4xx, 5xx)
           throw new Error(data.message || 'Verification failed.');
         }
 
-        // On success
+        // On success, set the message
         setMessage(data.message);
         setIsError(false);
 
+        // 3. Redirect to the dashboard after a 2-second delay
+        setTimeout(() => {
+          navigate('/'); // Or navigate to '/login' if you prefer
+        }, 2000);
+
       } catch (error) {
-        // On failure (network error or error thrown from above)
         setMessage(error.message || 'An error occurred. The link may be expired.');
         setIsError(true);
       } finally {
-        // This runs regardless of success or failure
         setIsLoading(false);
       }
     };
 
     verifyEmailToken();
-  }, [token]); // The effect re-runs if the token in the URL changes
+  }, [token, navigate]); // Add navigate to the dependency array
 
-  // 4. Render the UI based on the state
+  // Render the UI
   return (
     <div style={styles.container}>
       <div style={styles.card}>
@@ -68,13 +69,15 @@ const VerificationPage = () => {
               {message}
             </p>
             
-            {isError ? (
+            {/* Show login button only on success, as user will be redirected */}
+            {!isError && (
+              <p>Redirecting you to the dashboard...</p>
+            )}
+            
+            {/* Show resend button only on error */}
+            {isError && (
               <Link to="/resend-verification" style={styles.button}>
                 Resend Verification Link
-              </Link>
-            ) : (
-              <Link to="/login" style={styles.button}>
-                Go to Login
               </Link>
             )}
           </div>
@@ -84,7 +87,7 @@ const VerificationPage = () => {
   );
 };
 
-// Basic styles for the component
+// ... your styles object ...
 const styles = {
   container: {
     display: 'flex',
