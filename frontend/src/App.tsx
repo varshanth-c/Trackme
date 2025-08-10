@@ -30,6 +30,7 @@ const App = () => (
         <BrowserRouter>
         <Routes>
          <Route path="/verify-email/:token" element={<VerificationPage />} />
+          <Route path="/*" element={
           <AuthGuard>
             <MainLayout>
                 <Route path="/" element={<Dashboard />} />
@@ -52,7 +53,9 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               
             </MainLayout>
+            
           </AuthGuard>
+          } />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
