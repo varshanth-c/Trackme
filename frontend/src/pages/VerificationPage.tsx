@@ -22,7 +22,7 @@ const VerificationPage = () => {
 
       try {
         // IMPORTANT: Use an environment variable for your API URL
-        const apiUrl = `https://trackme-yeae.onrender.com/api/verify-email/${token}`;
+        const apiUrl = `https://trackme-yeae.onrender.com/api/auth/verify-email/${token}`;
         
         const response = await fetch(apiUrl);
         const data = await response.json();
