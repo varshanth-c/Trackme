@@ -28,7 +28,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-        
+         <Route path="/verify-email/:token" element={<VerificationPage />} />
           <AuthGuard>
             <MainLayout>
               <Routes>
@@ -44,7 +44,7 @@ const App = () => (
                 <Route path="/insights" element={<Insights />} />
                 <Route path="/ai-assistant" element={<AIAssistant />} />
                 <Route path="/settings" element={<Settings />} />
-                <Route path="/verify-email/:token" element={<VerificationPage />} />
+                
                 {/* --- 2. ADD THE ROUTE FOR THE PROFILE PAGE --- */}
                 <Route path="/profile" element={<Profile />} />
 
