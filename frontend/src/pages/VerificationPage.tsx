@@ -41,7 +41,7 @@ const VerificationPage = () => {
 
         // 3. Redirect to the dashboard after a 2-second delay
         setTimeout(() => {
-          navigate('/'); // Or navigate to '/login' if you prefer
+          window.location.href = '/'; // Or navigate to '/login' if you prefer
         }, 2000);
 
       } catch (error) {
