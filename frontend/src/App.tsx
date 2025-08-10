@@ -28,32 +28,32 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+        <Routes>
          <Route path="/verify-email/:token" element={<VerificationPage />} />
           <AuthGuard>
             <MainLayout>
-              <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/add-transaction" element={<AddTransaction />} />
 
-                {/* Route for the "Transactions" list page */}
+               
                 <Route path="/transactions" element={<Transactions />} />
 
-                {/* Route for editing a transaction (handled inside TransactionsPage) */}
+              
                 <Route path="/transactions/edit/:id" element={<Transactions />} />
                 <Route path="/budget" element={<Budget />} />
                 <Route path="/insights" element={<Insights />} />
                 <Route path="/ai-assistant" element={<AIAssistant />} />
                 <Route path="/settings" element={<Settings />} />
                 
-                {/* --- 2. ADD THE ROUTE FOR THE PROFILE PAGE --- */}
+                
                 <Route path="/profile" element={<Profile />} />
 
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                
                 <Route path="*" element={<NotFound />} />
-              </Routes>
+              
             </MainLayout>
           </AuthGuard>
-          
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </LanguageProvider>

@@ -97,26 +97,28 @@ router.get('/verify-email/:token', async (req, res) => {
   const { token } = req.params;
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const { email } = decoded;
 
     const [rows] = await db.query('SELECT verified FROM users WHERE email = ?', [email]);
+    
     if (rows.length === 0) {
-        return res.status(404).send('User not found.');
+      return res.status(404).json({ success: false, message: 'User not found.' });
     }
 
     if (rows[0].verified) {
-      return res.send('Email has already been verified.');
+      return res.status(200).json({ success: true, message: 'Email has already been verified.' });
     }
 
     await db.query('UPDATE users SET verified = ? WHERE email = ?', [true, email]);
-    return res.send('Email verified successfully. You can now log in.');
+    
+    return res.status(200).json({ success: true, message: 'Email verified successfully. You can now log in.' });
+
   } catch (err) {
     console.error('Verification Error:', err);
-    return res.status(400).send('Invalid or expired verification link.');
+    return res.status(400).json({ success: false, message: 'Invalid or expired verification link.' });
   }
 });
-
 
 // ------------------ LOGIN (No major changes needed) -------------------
 router.post('/login', async (req, res) => {
