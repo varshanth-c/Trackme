@@ -25,6 +25,11 @@ const VerificationPage = () => {
         const apiUrl = `https://trackme-yeae.onrender.com/api/auth/verify-email/${token}`;
         
         const response = await fetch(apiUrl);
+        // --- ADD THIS LOGGING BLOCK ---
+  console.log("Response Status:", response.status);
+  const responseText = await response.text(); // Get response as text first
+  console.log("Raw Response Text:", responseText);
+  // --- END LOGGING BLOCK ---
         const data = await response.json();
 
         if (!response.ok) {
