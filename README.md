@@ -142,6 +142,7 @@ SMTP_PASS=your_smtp_password
 
 # Frontend Base URL (for email links)
 BASE_URL=http://localhost:8080
+```
 ---
 ## **Contributing**
 Contributions are welcome! If you have ideas for improvement, feel free to fork the repository and create a pull request.
