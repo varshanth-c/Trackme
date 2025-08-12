@@ -18,7 +18,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useAddTransaction, Transaction, NewTransaction } from "@/hooks/useTransactions";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-
 // --- Constants ---
 const transactionTypes = [
   { value: "income", label: "income", icon: TrendingUp, color: "text-blue-500" },
@@ -42,6 +41,31 @@ const initialFormData = {
   date: new Date().toISOString().split("T")[0],
 };
 
+// ✨ NEW: Utility function to convert shorthand to a number
+const convertShorthandToNumber = (input: string): number | null => {
+  if (!input) return null;
+  
+  const value = input.toLowerCase().trim();
+  const numericPart = parseFloat(value);
+
+  // If the numeric part is not a valid number, return null
+  if (isNaN(numericPart)) return null;
+
+  if (value.endsWith('c')) {
+    return numericPart * 10000000; // Crore
+  }
+  if (value.endsWith('l')) {
+    return numericPart * 100000;   // Lakh
+  }
+  if (value.endsWith('k')) {
+    return numericPart * 1000;      // Thousand
+  }
+
+  // If no suffix, return the parsed number
+  return numericPart;
+};
+
+
 // =================================================================
 // MAIN ADD TRANSACTION PAGE COMPONENT
 // =================================================================
@@ -59,6 +83,18 @@ export default function AddTransaction() {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
+  // ✨ NEW: Handler for when the amount input loses focus (onBlur event)
+  const handleAmountBlur = () => {
+    // Only process if there is a value
+    if (formData.amount) {
+      const convertedValue = convertShorthandToNumber(formData.amount);
+      // If conversion is successful, update the form state with the full number
+      if (convertedValue !== null) {
+        setFormData((prev) => ({ ...prev, amount: String(convertedValue) }));
+      }
+    }
+  };
+
   const handleSelectChange = (name: 'type' | 'category', value: string) => {
     if (name === 'type') {
       setFormData((prev) => ({ ...prev, type: value as Transaction['type'], category: '' }));
@@ -70,6 +106,7 @@ export default function AddTransaction() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // More robust validation for all required fields
     if (!formData.type || !formData.amount || !formData.category || !formData.description) {
       toast({
         title: "Missing Fields",
@@ -79,8 +116,20 @@ export default function AddTransaction() {
       return;
     }
 
+    const parsedAmount = parseFloat(formData.amount);
+
+    // Added validation for a valid, positive number
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid positive number for the amount.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const transactionData: NewTransaction = {
-      amount: parseFloat(formData.amount),
+      amount: parsedAmount, // Use the parsed amount
       date: formData.date,
       description: formData.description,
       category: formData.category,
@@ -112,7 +161,6 @@ export default function AddTransaction() {
     return formData.type ? `${baseText} ${t(formData.type)}` : baseText;
   };
 
-  // ✅ CHANGED: Removed max-w-4xl and mx-auto, using padding for spacing
   return (
     <div className="space-y-6 px-4 sm:px-6 lg:px-8">
       <div className="flex items-center gap-4">
@@ -157,7 +205,18 @@ export default function AddTransaction() {
                 <Label htmlFor="amount">{t("amount")} *</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">₹</span>
-                  <Input id="amount" type="number" placeholder="0.00" className="pl-8" value={formData.amount} onChange={handleInputChange} required />
+                  {/* ✅ CHANGED: Input now handles shorthand */}
+                  <Input
+                    id="amount"
+                    type="text"
+                    inputMode="decimal" 
+                    placeholder="e.g., 5000 or 5k"
+                    className="pl-8"
+                    value={formData.amount}
+                    onChange={handleInputChange}
+                    onBlur={handleAmountBlur} 
+                    required
+                  />
                 </div>
               </div>
               {formData.type && (

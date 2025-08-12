@@ -5,7 +5,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 // UI Components and Icons
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Sigma, Landmark, Wallet, TrendingUp, TrendingDown, Loader2, ArrowUpRight, ArrowDownRight } from "lucide-react"; // ✅ Import TrendingDown
+import { Sigma, Landmark, Wallet, TrendingUp, TrendingDown, Loader2, ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 // Recharts for charts
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
@@ -13,6 +13,34 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 // Custom Hooks and Types
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useGetTransactions, Transaction } from "@/hooks/useTransactions";
+
+
+// ✨ NEW: Helper function to format numbers into the Indian numbering system (Lakh, Crore)
+const formatIndianCurrency = (num: number): string => {
+  if (typeof num !== 'number' || isNaN(num)) {
+    return '₹0';
+  }
+
+  const sign = num < 0 ? '-' : '';
+  const absNum = Math.abs(num);
+  let formattedNum;
+
+  if (absNum >= 10000000) { // 1 Crore and above
+    formattedNum = (absNum / 10000000).toFixed(2) + ' Cr';
+  } else if (absNum >= 100000) { // 1 Lakh and above
+    formattedNum = (absNum / 100000).toFixed(2) + ' L';
+  } else if (absNum >= 1000) { // 1 Thousand and above
+    formattedNum = (absNum / 1000).toFixed(1) + ' K';
+  } else {
+    formattedNum = absNum.toFixed(0);
+  }
+
+  // Remove .00 or .0 from the end to make it cleaner (e.g., "5.00 L" becomes "5 L")
+  formattedNum = formattedNum.replace(/\.00?(?=\s[A-Za-z]|$)/, '');
+
+  return `${sign}₹${formattedNum}`;
+};
+
 
 // --- Main Dashboard Component ---
 export default function SmartDashboard() {
@@ -22,6 +50,7 @@ export default function SmartDashboard() {
   const [timePeriod, setTimePeriod] = useState<"week" | "month" | "year">("month");
   const { data: transactions, isLoading } = useGetTransactions();
 
+  // ... (useMemo hook and all the data calculation logic remains exactly the same)
   const dashboardData = useMemo(() => {
     if (!transactions) return null;
 
@@ -95,6 +124,7 @@ export default function SmartDashboard() {
     return <div className="flex items-center justify-center min-h-[400px]"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
   
+  // ... (The rest of the SmartDashboard component's return statement remains the same)
   return (
     <div className="space-y-4 md:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -182,9 +212,9 @@ function StatCard({ title, value, change, icon: Icon, isSubtle = false }: { titl
         <Icon className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value)}</div>
+        {/* ✅ CHANGED: This line now uses the new formatting function */}
+        <div className="text-2xl font-bold">{formatIndianCurrency(value)}</div>
         {isFinite(change) && (
-          // ✅ CHANGED: Replaced 'text-emerald-500' with 'text-blue-500' for a neutral, positive indicator.
           <p className={`text-xs ${isPositive ? 'text-blue-500' : 'text-red-500'} flex items-center`}>
             {isPositive ? <TrendingUp className="w-3 h-3 mr-1" /> : <TrendingDown className="w-3 h-3 mr-1" />}
             {isPositive ? '+' : ''}{change.toFixed(1)}% vs last period
@@ -195,9 +225,9 @@ function StatCard({ title, value, change, icon: Icon, isSubtle = false }: { titl
   );
 }
 
+// ... (TransactionRow and CustomTooltip components remain exactly the same)
 function TransactionRow({ transaction: tx }: { transaction: Transaction }) {
   const isIncome = tx.type === 'income';
-  // ✅ CHANGED: Replaced 'text-green-500' with 'text-blue-500' and standardized investment color.
   const color = isIncome ? 'text-blue-500' : tx.type === 'expense' ? 'text-red-500' : 'text-slate-500';
   const bgColor = isIncome ? 'bg-blue-500/10' : tx.type === 'expense' ? 'bg-red-500/10' : 'bg-slate-500/10';
   const Icon = tx.type === 'expense' ? ArrowDownRight : ArrowUpRight;

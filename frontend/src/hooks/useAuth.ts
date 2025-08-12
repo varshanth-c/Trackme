@@ -112,7 +112,30 @@ export function useAuth() {
     setToken(null);
     window.location.reload();
   };
+const forgotPassword = async (email) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
 
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Throw an error with the message from the backend
+                throw new Error(data.error || 'Failed to send reset link.');
+            }
+            
+            // On success, the backend sends a generic message.
+            // The AuthGuard component will handle showing this to the user via a toast.
+            return data;
+
+        } catch (error) {
+            // Re-throw the error so the component can catch it and display a toast
+            throw error;
+        }
+    };
   return {
     user,
     token, // Exposing the token is useful for other API calls
@@ -120,5 +143,6 @@ export function useAuth() {
     signIn,
     signUp,
     signOut,
+    forgotPassword,
   };
 }

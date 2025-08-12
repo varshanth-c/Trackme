@@ -16,9 +16,11 @@ import Insights from "./pages/Insights";
 import AIAssistant from "./pages/AIAssistant";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
-// --- 1. IMPORT THE NEW PROFILE PAGE ---
+
 import Profile from "./pages/Profile";
 import VerificationPage from './pages/VerificationPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import ForgetPasswordPage from './pages/ForgetPasswordPage';
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -31,7 +33,8 @@ const App = () => (
           <Routes>
             {/* --- Public route that does not require login --- */}
             <Route path="/verify-email/:token" element={<VerificationPage />} />
-
+            <Route path="/forget-password" element={<ForgetPasswordPage/>}/>
+            <Route path="/reset-password/:token" element={<ResetPasswordPage/>}/>
             {/* --- Protected routes that require login --- */}
             <Route path="/*" element={
               <AuthGuard>
