@@ -148,10 +148,15 @@ BASE_URL=http://localhost:8080
 Contributions are welcome! If you have ideas for improvement, feel free to fork the repository and create a pull request.
 
 Fork the repository.
+
 Create a new feature branch (git checkout -b feature/AmazingFeature).
+
 Commit your changes (git commit -m 'Add some AmazingFeature').
+
 Push to the branch (git push origin feature/AmazingFeature).
+
 Open a Pull Request.
+
 ---
 ## **Acknowledgments**
 Thank you for checking out Track₹!
