@@ -26,11 +26,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             </div>
             
             <div className="flex items-center gap-4">
-              {/* Language Selector */}
-            
               
-              {/* UserNav Profile Menu */}
-              {/* This component contains the Avatar, links to Profile/Settings, and the Logout option */}
               <UserNav />
             </div>
           </header>

@@ -1,31 +1,33 @@
 import {
-  LayoutDashboard,
-  Plus,
-  Wallet,
-  TrendingUp,
-  Bot,
-  Settings,
-  Receipt,
-  ReceiptIndianRupee,
-  Target,
-  User as UserIcon,
+  LayoutDashboard, Plus, Wallet, TrendingUp, Bot, Settings,
+  ReceiptIndianRupee, Target, User as UserIcon,
 } from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  useSidebar,
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
+  SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, useSidebar,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+
+// A simple hook to detect mobile screen sizes.
+import { useState, useEffect } from 'react';
+
+const useIsMobile = (breakpoint = 768) => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < breakpoint);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < breakpoint);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [breakpoint]);
+
+  return isMobile;
+};
 
 const mainItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -40,27 +42,32 @@ const mainItems = [
 const otherItems = [{ title: "Settings", url: "/settings", icon: Settings }];
 
 export function AppSidebar() {
-  const { state } = useSidebar();
-  const location = useLocation();
+  const { state, toggleSidebar } = useSidebar();
   const { user } = useAuth();
   const collapsed = state === "collapsed";
+  const isMobile = useIsMobile();
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive
       ? "bg-muted text-foreground font-medium border-r-2 border-foreground"
       : "hover:bg-muted/50 text-muted-foreground hover:text-foreground";
 
-  // ✅ CHANGED: This function now only takes the first character for consistency with the Profile page.
   const getInitials = (name: string | null | undefined) => (name ? name.charAt(0).toUpperCase() : 'U');
+
+  const handleLinkClick = () => {
+    if (isMobile && state === 'expanded') {
+      toggleSidebar();
+    }
+  };
 
   return (
     <Sidebar className={collapsed ? "w-14" : "w-64"} collapsible="icon">
       <SidebarContent className="border-r flex flex-col">
+        {/* Header Section */}
         <div className="p-4 border-b">
           {!collapsed && (
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 overflow-hidden flex items-center justify-center">
-                {/* ✅ CHANGED: Using an absolute path for the logo is more robust. */}
                 <img src="/favicon1.svg" alt="Rupee Coin Logo" width="100" />
               </div>
               <div>
@@ -93,6 +100,7 @@ export function AppSidebar() {
                         to={item.url}
                         end={item.url === "/"}
                         className={getNavCls}
+                        onClick={handleLinkClick}
                       >
                         <item.icon className="w-5 h-5" />
                         {!collapsed && <span>{item.title}</span>}
@@ -111,7 +119,7 @@ export function AppSidebar() {
                 {otherItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <NavLink to={item.url} className={getNavCls}>
+                      <NavLink to={item.url} className={getNavCls} onClick={handleLinkClick}>
                         <item.icon className="w-5 h-5" />
                         {!collapsed && <span>{item.title}</span>}
                       </NavLink>
@@ -123,7 +131,7 @@ export function AppSidebar() {
           </SidebarGroup>
         </div>
 
-        {/* User Profile Section at the bottom */}
+        {/* User Profile Section */}
         <div className="mt-auto">
           <Separator />
           <div className="p-4">

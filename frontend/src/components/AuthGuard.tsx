@@ -86,7 +86,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
+              <div className="w-8 h-8 overflow-hidden flex items-center justify-center">
                 <img src="/favicon1.svg" alt="Rupee Coin Logo" width="100" />
               </div>
               <h1 className="text-2xl font-bold">Track₹</h1>

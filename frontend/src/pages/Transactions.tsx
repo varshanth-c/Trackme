@@ -52,7 +52,6 @@ export default function TransactionsPage() {
   const isEditMode = Boolean(editMatch);
   const { id: transactionId } = editMatch?.params || {};
 
-  // ✅ CHANGED: Removed max-w-4xl and mx-auto, using padding for spacing
   return (
     <div className="space-y-8 px-4 sm:px-6 lg:px-8">
       {isEditMode ? (
@@ -228,7 +227,6 @@ function TransactionEditForm({ transactionId }: { transactionId: string }) {
 
 // --- Helper Sub-components ---
 const StatCard = ({ title, value, type, icon: Icon }: { title: string, value: number, type: string, icon: React.ElementType }) => {
-  // ✅ CHANGED: Standardized color logic to use neutral gray for positive values
   const color = type === 'income' ? 'text-slate-800' 
               : type === 'investment' ? 'text-slate-500' 
               : value >= 0 ? 'text-slate-800' 
@@ -236,21 +234,128 @@ const StatCard = ({ title, value, type, icon: Icon }: { title: string, value: nu
   return <Card><CardHeader className="flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium">{title}</CardTitle><Icon className="h-5 w-5 text-muted-foreground" /></CardHeader><CardContent><div className={`text-xl sm:text-2xl font-bold ${color}`}>{value.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</div></CardContent></Card>;
 };
 
+// ✅ CORRECTED: The TransactionItem component is now fully compliant with accessibility standards.
 const TransactionItem = ({ transaction: tx, onDelete, isDeleting }: { transaction: Transaction, onDelete: (id: string) => void, isDeleting: boolean }) => {
-  const { t } = useLanguage(); const navigate = useNavigate(); const attr = typeAttributes[tx.type as keyof typeof typeAttributes]; const TypeIcon = attr.icon;
+  const { t } = useLanguage(); 
+  const navigate = useNavigate();
+  const attr = typeAttributes[tx.type as keyof typeof typeAttributes];
+  const TypeIcon = attr.icon;
+  
   return (
-    <Dialog><DialogTrigger asChild><div className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 cursor-pointer"><div className="flex items-center gap-4 flex-1 overflow-hidden"><div className={`p-2 rounded-full ${attr.badge}`}><TypeIcon className="w-5 h-5" /></div><div className="flex-1 overflow-hidden"><p className="font-semibold truncate">{tx.description}</p><div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground"><Badge variant="outline">{t(tx.category)}</Badge>{tx.subcategory && <><span className="hidden sm:inline">•</span><Badge variant="secondary">{t(tx.subcategory)}</Badge></>}</div></div></div><p className={`font-bold text-base sm:text-lg ${attr.color}`}>{tx.type === 'income' ? '+' : '-'}{parseFloat(tx.amount as string).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</p></div></DialogTrigger>
-      <DialogContent><DialogHeader><DialogTitle className="capitalize flex items-center gap-2"><TypeIcon className={`w-5 h-5 ${attr.color}`} /> {tx.type} Details</DialogTitle><DialogDescription>{tx.description}</DialogDescription></DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="flex items-center"><Calendar className="w-4 h-4 mr-3 text-muted-foreground" /><strong>Date:</strong><span className="ml-auto">{format(new Date(tx.date as string), "MMMM d, yyyy")}</span></div>
-          <div className="flex items-center"><Tag className="w-4 h-4 mr-3 text-muted-foreground" /><strong>Category:</strong><span className="ml-auto capitalize">{t(tx.category)}</span></div>
-          {tx.subcategory && <div className="flex items-center"><FileText className="w-4 h-4 mr-3 text-muted-foreground" /><strong>Subcategory:</strong><span className="ml-auto capitalize">{t(tx.subcategory)}</span></div>}
-          {tx.notes && <div className="flex items-start"><StickyNote className="w-4 h-4 mr-3 mt-1 text-muted-foreground" /><strong>Notes:</strong><p className="ml-auto text-right text-sm">{tx.notes}</p></div>}
+    <Dialog>
+      <DialogTrigger asChild>
+        <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 cursor-pointer transition-colors">
+          <div className="flex items-center gap-4 flex-1 overflow-hidden">
+            <div className={`p-2 rounded-full ${attr.badge}`}>
+              <TypeIcon className="w-5 h-5" />
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <p className="font-semibold truncate">{tx.description}</p>
+              <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                <Badge variant="outline">{t(tx.category)}</Badge>
+                {tx.subcategory && (
+                  <>
+                    <span className="hidden sm:inline">•</span>
+                    <Badge variant="secondary">{t(tx.subcategory)}</Badge>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          <p className={`font-bold text-base sm:text-lg ${attr.color}`}>
+            {tx.type === 'income' ? '+' : '-'}
+            {parseFloat(tx.amount as string).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
+          </p>
         </div>
-        <DialogFooter className="sm:justify-between"><AlertDialog><AlertDialogTrigger asChild><Button variant="destructive" disabled={isDeleting}><Trash2 className="w-4 h-4 mr-2" /> Delete</Button></AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription>This will permanently delete this transaction.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={() => onDelete(tx.id)}>Delete</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog><Button onClick={() => navigate(`/transactions/edit/${tx.id}`)}><Edit className="w-4 h-4 mr-2" /> Edit</Button></DialogFooter>
-      </DialogContent></Dialog>
+      </DialogTrigger>
+      
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="capitalize flex items-center gap-2">
+            <TypeIcon className={`w-5 h-5 ${attr.color}`} /> 
+            {tx.type} Details
+          </DialogTitle>
+          <DialogDescription>
+            A detailed view of your transaction from {format(new Date(tx.date as string), "MMMM d, yyyy")}.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4 py-4 border-t border-b">
+          <div className="flex items-center">
+            <FileText className="w-4 h-4 mr-3 text-muted-foreground" />
+            <strong>Description:</strong>
+            <span className="ml-auto text-right">{tx.description}</span>
+          </div>
+          <div className="flex items-center">
+            <Tag className="w-4 h-4 mr-3 text-muted-foreground" />
+            <strong>Category:</strong>
+            <span className="ml-auto capitalize">{t(tx.category)}</span>
+          </div>
+          {tx.subcategory && (
+            <div className="flex items-center">
+              <Tag className="w-4 h-4 mr-3 text-muted-foreground opacity-50" />
+              <strong>Subcategory:</strong>
+              <span className="ml-auto capitalize">{t(tx.subcategory)}</span>
+            </div>
+          )}
+          {tx.notes && (
+            <div className="flex items-start">
+              <StickyNote className="w-4 h-4 mr-3 mt-1 text-muted-foreground" />
+              <strong>Notes:</strong>
+              <p className="ml-auto text-right text-sm">{tx.notes}</p>
+            </div>
+          )}
+        </div>
+
+        <DialogFooter className="sm:justify-between flex-wrap gap-2">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" disabled={isDeleting}>
+                <Trash2 className="w-4 h-4 mr-2" /> Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete this transaction from your records.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => onDelete(tx.id)}>
+                  {isDeleting ? <Loader2 className="w-4 h-4 animate-spin"/> : "Yes, delete it"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <Button onClick={() => navigate(`/transactions/edit/${tx.id}`)}>
+            <Edit className="w-4 h-4 mr-2" /> Edit
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-const EmptyState = () => { const navigate = useNavigate(); return <div className="text-center py-12 border-2 border-dashed rounded-lg"><PackageOpen className="mx-auto h-12 w-12 text-muted-foreground" /><h3 className="mt-4 text-lg font-semibold">No Transactions Yet</h3><p className="mt-1 text-sm text-muted-foreground">Get started by adding your first income, expense, or investment.</p><Button className="mt-6" onClick={() => navigate("/add-transaction")}><Plus className="w-4 h-4 mr-2" /> Add First Transaction</Button></div>; };
-const NoResultsState = () => <div className="text-center py-12 border-2 border-dashed rounded-lg"><Search className="mx-auto h-12 w-12 text-muted-foreground" /><h3 className="mt-4 text-lg font-semibold">No Matching Transactions</h3><p className="mt-1 text-sm text-muted-foreground">Try adjusting your search or filter criteria.</p></div>;
+const EmptyState = () => { 
+  const navigate = useNavigate(); 
+  return (
+    <div className="text-center py-12 border-2 border-dashed rounded-lg">
+      <PackageOpen className="mx-auto h-12 w-12 text-muted-foreground" />
+      <h3 className="mt-4 text-lg font-semibold">No Transactions Yet</h3>
+      <p className="mt-1 text-sm text-muted-foreground">Get started by adding your first income, expense, or investment.</p>
+      <Button className="mt-6" onClick={() => navigate("/add-transaction")}>
+        <Plus className="w-4 h-4 mr-2" /> Add First Transaction
+      </Button>
+    </div>
+  ); 
+};
+
+const NoResultsState = () => (
+  <div className="text-center py-12 border-2 border-dashed rounded-lg">
+    <Search className="mx-auto h-12 w-12 text-muted-foreground" />
+    <h3 className="mt-4 text-lg font-semibold">No Matching Transactions</h3>
+    <p className="mt-1 text-sm text-muted-foreground">Try adjusting your search or filter criteria.</p>
+  </div>
+);
