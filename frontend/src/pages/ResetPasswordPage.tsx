@@ -47,7 +47,7 @@ const ResetPasswordPage = () => {
 
       // Redirect to login after a short delay
       setTimeout(() => {
-        navigate('/login');
+        window.location.href='/';
       }, 3000);
 
     } catch (error) {
