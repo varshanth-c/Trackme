@@ -143,6 +143,8 @@ SMTP_PASS=your_smtp_password
 # Frontend Base URL (for email links)
 BASE_URL=http://localhost:8080
 
+---
+
 ## Contributing
 Contributions are welcome! If you have ideas for improvement, feel free to fork the repository and create a pull request.
 
@@ -151,6 +153,8 @@ Create a new feature branch (git checkout -b feature/AmazingFeature).
 Commit your changes (git commit -m 'Add some AmazingFeature').
 Push to the branch (git push origin feature/AmazingFeature).
 Open a Pull Request.
+
+---
 
 ## Acknowledgments
 Thank you for checking out Track₹!
