@@ -7,13 +7,13 @@ Live Demo: [(https://trackme-two.vercel.app/)]
 A snapshot of the main dashboard, showcasing performance trends and key financial stats.
 
 📜 Table of Contents
-About The Project
-Key Features
-Tech Stack
-Getting Started
-Prerequisites
-Installation
-Environment Variables
+-About The Project
+-Key Features
+-Tech Stack
+-Getting Started
+-Prerequisites
+-Installation
+-Environment Variables
 
 About The Project
 Track₹ was built to solve the common problem of financial disorganization. Traditional expense trackers can be rigid and time-consuming. This application streamlines the process by offering a clean interface for data entry, powerful visualization tools, and a unique Natural Language to SQL (NL-to-SQL) feature that lets you "talk" to your data. Ask questions like "What was my total spending on food last month?" and get instant answers, making financial analysis more intuitive and accessible than ever before.
