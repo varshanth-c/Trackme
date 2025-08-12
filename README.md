@@ -1,120 +1,110 @@
-Track₹ - Your Smart Financial Companion 🚀(Trackme)
-An intelligent financial dashboard designed to provide a comprehensive overview of your finances. Track₹ allows you to manage transactions, set and monitor budgets, and gain unique insights into your spending habits through an AI-powered natural language query interface.
+# Track₹ – Your Smart Financial Companion 🚀  
+*(Also known as TrackMe)*  
 
-Live Demo: [(https://trackme-two.vercel.app/)]
+An intelligent financial dashboard that gives you a **complete overview of your finances**. Track₹ lets you manage transactions, set budgets, and gain actionable insights into your spending habits through an **AI-powered natural language query interface**.  
 
-📸 Application Preview
-A snapshot of the main dashboard, showcasing performance trends and key financial stats.
+🔗 **Live Demo:** [https://trackme-two.vercel.app/](https://trackme-two.vercel.app/)  
 
-📜 Table of Contents
--#About The Project
--#Key Features
--#Tech Stack
--#Getting Started
--#Prerequisites
--#Installation
--#Environment Variables
+---
 
-About The Project
-Track₹ was built to solve the common problem of financial disorganization. Traditional expense trackers can be rigid and time-consuming. This application streamlines the process by offering a clean interface for data entry, powerful visualization tools, and a unique Natural Language to SQL (NL-to-SQL) feature that lets you "talk" to your data. Ask questions like "What was my total spending on food last month?" and get instant answers, making financial analysis more intuitive and accessible than ever before.
+## 📸 Application Preview  
+*A snapshot of the main dashboard showing performance trends and key financial stats.*  
 
-Key Features ✨
-Comprehensive Transaction Management: Seamlessly add, view, edit, and delete your income, expenses, and investments with detailed forms and categorization.
+---
 
-Interactive Dashboard: A dynamic and responsive dashboard that provides a bird's-eye view of your financial health, including total income, revenue, and net savings.
+## 📜 Table of Contents  
+- [About The Project](#about-the-project)  
+- [Key Features](#key-features)  
+- [Tech Stack](#tech-stack)  
+- [Getting Started](#getting-started)  
+- [Prerequisites](#prerequisites)  
+- [Installation](#installation)  
+- [Environment Variables](#environment-variables)  
+- [Contributing](#contributing)  
 
-Smart Budgeting & Alerts: Set monthly or yearly budgets for different categories. The system automatically tracks your spending and sends you email alerts when you're approaching your limit.
+---
 
-AI-Powered Queries (NL-to-SQL): Ask questions about your finances in plain English. The backend converts your query into a SQL command, fetches the data, and presents it to you.
+## About The Project  
+Managing personal finances is often tedious and fragmented. Traditional expense trackers can be rigid, time-consuming, and lack advanced analysis tools.  
 
-Query History: Your natural language queries are saved, allowing you to review past inquiries and track your analytical journey.
+**Track₹ solves this problem** by offering:  
+- A clean, intuitive interface for quick data entry  
+- Powerful visualization tools for better financial awareness  
+- A unique **Natural Language to SQL (NL-to-SQL)** feature that lets you *talk* to your data.  
+  Example: *"What was my total spending on food last month?"* → Instant results.  
 
-Data-Driven Insights: Analyze performance trends with interactive charts, filter your data by type or time period, and gain a deeper understanding of your financial habits.
+This makes financial analysis **faster, smarter, and more accessible** than ever.  
 
-Secure User Authentication: A complete and secure authentication system using JWT, including email verification and a "forgot password" flow.
+---
 
-Tech Stack 🛠️
-This project is a full-stack application built with modern technologies.
+## Key Features ✨  
 
-Frontend:
+- **Comprehensive Transaction Management** – Add, view, edit, and delete your income, expenses, and investments with detailed forms and categorization.  
+- **Interactive Dashboard** – A dynamic, responsive dashboard showing total income, expenses, and net savings at a glance.  
+- **Smart Budgeting & Alerts** – Set monthly or yearly budgets per category, with email alerts when you approach limits.  
+- **AI-Powered Queries (NL-to-SQL)** – Ask plain English questions about your finances; the system converts them into SQL and returns results instantly.  
+- **Query History** – View and track your past financial questions for better analysis.  
+- **Data-Driven Insights** – Filter by category or time, analyze trends, and make informed financial decisions.  
+- **Secure Authentication** – JWT-based authentication with email verification and password reset support.  
 
-Framework: React.js
+---
 
-Language: TypeScript
+## Tech Stack 🛠️  
 
-UI: shadcn/ui, Tailwind CSS
+**Frontend**  
+- Framework: React.js  
+- Language: TypeScript  
+- UI: [shadcn/ui](https://ui.shadcn.com/), Tailwind CSS  
+- State Management: React Context API, React Query  
+- Charts: Recharts  
+- Routing: React Router  
 
-State Management: React Context API, React Query
+**Backend**  
+- Framework: Node.js, Express.js  
+- Language: JavaScript (ES6+)  
+- Database: MySQL  
+- Authentication: JSON Web Tokens (JWT), bcrypt  
+- Email Service: Nodemailer  
 
-Charting: Recharts
+---
 
-Routing: React Router
+## Getting Started 🚀  
 
-Backend:
+Follow these steps to run the project locally.  
 
-Framework: Node.js, Express.js
+---
 
-Language: JavaScript (ES6+)
+### Prerequisites  
+Ensure you have the following installed:  
+- Node.js (v18 or later)  
+- npm or yarn  
+- MySQL running locally or remotely  
 
-Database: MySQL
+---
 
-Authentication: JSON Web Tokens (JWT), bcrypt
+### Installation  
 
-Email Service: Nodemailer
+#### 1️⃣ Clone the repository  
+git clone https://github.com/varshanth/Trackme.git
+cd Trackme
 
-Getting Started 🚀
-To get a local copy up and running, follow these simple steps.
-
-Prerequisites
-Make sure you have the following installed on your machine:
-
-Node.js (v18 or later)
-
-npm (or yarn)
-
-A running instance of MySQL
-
-Installation
-Clone the repository:
-
-Bash
-
-git clone https://github.com/your-username/trackr-project.git
-cd trackr-project
-Setup the Backend:
-
-Bash
-
-cd backend
-npm install
-cp .env.example .env
-Next, open the .env file and fill in your environment variables (see the section below).
-Finally, start the backend server:
-
-Bash
-
-npm run dev 
-Your backend should now be running on http://localhost:5000.
-
-Setup the Frontend:
-Open a new terminal window.
-
-Bash
+Frontend setup
+Open a new terminal:
 
 cd frontend
 npm install
-Start the frontend development server:
-
-Bash
-
 npm run dev
-Your frontend should now be running on http://localhost:8080 (or another port if 8080 is busy).
+The frontend runs at: http://localhost:8080
 
-Environment Variables 🔑
-For the application to run correctly, you must create a .env file in the backend directory and provide the following values:
+Backend setup
 
-Code snippet
+cd Smart-vendor-backend
+npm install
+fill the .env
+node start
+The backend runs at: http://localhost:5000
 
+###Environment Variables
 # Database Configuration
 DB_HOST=localhost
 DB_USER=your_mysql_user
@@ -134,8 +124,19 @@ SMTP_PASS=your_smtp_password
 BASE_URL=http://localhost:8080
 
 Contributing 🤝
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
+Contributions are welcome!
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Fork the repository
 
-Thankyou
+Create a feature branch (git checkout -b feature-name)
+
+Commit changes (git commit -m 'Add feature')
+
+Push to the branch (git push origin feature-name)
+
+Open a Pull Request
+
+If you have ideas for improvement, feel free to open an issue with the enhancement tag.
+
+Thank you for checking out Track₹! 🙌
+
