@@ -15,13 +15,12 @@ An intelligent financial dashboard that gives you a **complete overview of your 
 
 ## 📜 Table of Contents
 - [About The Project](#about-the-project)
-- [Key Features](#key-features-✨)
-- [Tech Stack](#tech-stack-🛠️)
-- [Getting Started](#getting-started-)
-- [Environment Variables](#environment-variables-)
-- [Contributing](#contributing-)
-- [License](#license-)
-- [Acknowledgments](#acknowledgments-)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Contributing](#contributing)
+- [Acknowledgments](#acknowledgments)
 
 ---
 
@@ -38,7 +37,7 @@ This makes financial analysis **faster, smarter, and more accessible** than ever
 
 ---
 
-## Key Features ✨
+## Key Features
 
 - **Comprehensive Transaction Management** – Add, view, edit, and delete your income, expenses, and investments with detailed forms and categorization.
 - **Interactive Dashboard** – A dynamic, responsive dashboard showing total income, expenses, and net savings at a glance.
@@ -50,7 +49,7 @@ This makes financial analysis **faster, smarter, and more accessible** than ever
 
 ---
 
-## Tech Stack 🛠️
+## Tech Stack
 
 **Frontend**
 - **Framework:** React.js
@@ -69,7 +68,7 @@ This makes financial analysis **faster, smarter, and more accessible** than ever
 
 ---
 
-## Getting Started 🚀
+## Getting Started
 
 Follow these steps to set up and run the project locally.
 
@@ -119,7 +118,7 @@ Ensure you have the following installed on your machine:
 
 ---
 
-## Environment Variables 🔑
+## Environment Variables
 
 For the backend to run correctly, you must create a `.env` file in the `Smart-vendor-backend` directory and provide the following values:
 
@@ -144,7 +143,7 @@ SMTP_PASS=your_smtp_password
 # Frontend Base URL (for email links)
 BASE_URL=http://localhost:8080
 
-Contributing 🤝
+## Contributing
 Contributions are welcome! If you have ideas for improvement, feel free to fork the repository and create a pull request.
 
 Fork the repository.
@@ -153,5 +152,5 @@ Commit your changes (git commit -m 'Add some AmazingFeature').
 Push to the branch (git push origin feature/AmazingFeature).
 Open a Pull Request.
 
-Acknowledgments 🙌
+## Acknowledgments
 Thank you for checking out Track₹!
