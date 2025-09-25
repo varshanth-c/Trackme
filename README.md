@@ -143,6 +143,24 @@ SMTP_PASS=your_smtp_password
 # Frontend Base URL (for email links)
 BASE_URL=http://localhost:8080
 ```
+```env
+PORT=5000
+DB_NAME=vendor
+DB_HOST=mysql-199ed444-varshanthgen-9979.d.aivencloud.com
+DB_PORT=21316
+DB_USER=avnadmin
+DB_PASSWORD=AVNS_88TO3qFdyaAnnVXvC4o
+DB_SSL=true
+
+JWT_SECRET=your_secret_key_here
+TOKEN_EXPIRY=1d
+GEMINI_API_KEY=AIzaSyCOYyZi7d_KPBvRKSzlKW13ablRrGl96BU
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=varshanthgowdaml@gmail.com
+SMTP_PASS=yrpp bdhr rjhu wlhg
+
+```
 ---
 ## **Contributing**
 Contributions are welcome! If you have ideas for improvement, feel free to fork the repository and create a pull request.
