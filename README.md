@@ -236,7 +236,7 @@ erDiagram
         datetime created_at "When summary was created"
         datetime updated_at "Last update date"
     }
-    
+```
 ---
 ## **Acknowledgments**
 Thank you for checking out Track₹!
