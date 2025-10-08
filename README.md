@@ -178,62 +178,63 @@ Open a Pull Request.
 ---
 
 ## **ER Diagram**
+```mermaid
 erDiagram
-    USER ||--o{ EXPENSE : "creates"
-    USER ||--o{ QUERY_LOG : "generates"
-    USER ||--o{ MONTHLY_SUMMARY : "has"
+    USER ||--o{ EXPENSE : "One user creates many expenses"
+    USER ||--o{ QUERY_LOG : "One user generates many queries"
+    USER ||--o{ MONTHLY_SUMMARY : "One user has many monthly summaries"
 
     USER {
-        char(36) id PK
-        text full_name
-        varchar(100) email UK
-        varchar(255) password
-        enum role "admin,staff,vendor"
-        text specialty "optional"
-        text phone_number "optional"
-        text avatar_url "optional"
-        text business_name "optional"
-        text business_type "optional"
-        text business_address "optional"
-        varchar(10) preferred_language "default en"
-        tinyint verified "default 0"
-        timestamp created_at
-        timestamp updated_at
+        string id "🔑 Unique identifier"
+        string full_name "Full name of user"
+        string email "Email address (must be unique)"
+        string password "Encrypted password"
+        string role "User type: Admin, Staff, or Vendor"
+        string specialty "Area of expertise (optional)"
+        string phone_number "Contact number (optional)"
+        string avatar_url "Profile picture link (optional)"
+        string business_name "Company name (optional)"
+        string business_type "Type of business (optional)"
+        string business_address "Business location (optional)"
+        string preferred_language "Default: English"
+        boolean verified "Account verified status"
+        datetime created_at "Account creation date"
+        datetime updated_at "Last update date"
     }
 
     EXPENSE {
-        char(36) id PK
-        char(36) user_id FK
-        decimal(10_2) amount
-        date date
-        text description
-        text category
-        text subcategory "optional"
-        text type "expense/income"
-        text notes "optional"
-        text receipt_photo_url "optional"
-        timestamp created_at
-        timestamp updated_at
+        string id "🔑 Unique identifier"
+        string user_id "🔗 Links to User who created this"
+        decimal amount "Money spent or earned"
+        date date "Date of transaction"
+        string description "What was this expense for"
+        string category "Main category (e.g., Food, Travel)"
+        string subcategory "Specific type (optional)"
+        string type "Expense or Income"
+        string notes "Additional details (optional)"
+        string receipt_photo_url "Photo of receipt (optional)"
+        datetime created_at "When this was recorded"
+        datetime updated_at "Last modification date"
     }
 
     QUERY_LOG {
-        char(36) id PK
-        char(36) user_id FK
-        text question
-        text sql_query
-        int usage_count "default 1"
-        timestamp created_at
-        timestamp last_used_at
+        string id "🔑 Unique identifier"
+        string user_id "🔗 Links to User who asked"
+        string question "Question asked by user"
+        string sql_query "Database query generated"
+        integer usage_count "How many times used"
+        datetime created_at "First time asked"
+        datetime last_used_at "Most recent use"
     }
 
     MONTHLY_SUMMARY {
-        char(36) id PK
-        char(36) user_id FK
-        text category
-        decimal(10_2) amount
-        text month
-        timestamp created_at
-        timestamp updated_at
+        string id "🔑 Unique identifier"
+        string user_id "🔗 Links to User"
+        string category "Expense category"
+        decimal amount "Total amount for month"
+        string month "Which month and year"
+        datetime created_at "When summary was created"
+        datetime updated_at "Last update date"
     }
     
 ---
