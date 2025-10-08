@@ -176,5 +176,66 @@ Push to the branch (git push origin feature/AmazingFeature).
 Open a Pull Request.
 
 ---
+
+## **ER Diagram**
+erDiagram
+    USER ||--o{ EXPENSE : "creates"
+    USER ||--o{ QUERY_LOG : "generates"
+    USER ||--o{ MONTHLY_SUMMARY : "has"
+
+    USER {
+        char(36) id PK
+        text full_name
+        varchar(100) email UK
+        varchar(255) password
+        enum role "admin,staff,vendor"
+        text specialty "optional"
+        text phone_number "optional"
+        text avatar_url "optional"
+        text business_name "optional"
+        text business_type "optional"
+        text business_address "optional"
+        varchar(10) preferred_language "default en"
+        tinyint verified "default 0"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    EXPENSE {
+        char(36) id PK
+        char(36) user_id FK
+        decimal(10_2) amount
+        date date
+        text description
+        text category
+        text subcategory "optional"
+        text type "expense/income"
+        text notes "optional"
+        text receipt_photo_url "optional"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    QUERY_LOG {
+        char(36) id PK
+        char(36) user_id FK
+        text question
+        text sql_query
+        int usage_count "default 1"
+        timestamp created_at
+        timestamp last_used_at
+    }
+
+    MONTHLY_SUMMARY {
+        char(36) id PK
+        char(36) user_id FK
+        text category
+        decimal(10_2) amount
+        text month
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+---
 ## **Acknowledgments**
 Thank you for checking out Track₹!
