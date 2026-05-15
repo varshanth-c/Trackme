@@ -143,6 +143,7 @@ SMTP_PASS=your_smtp_password
 # Frontend Base URL (for email links)
 BASE_URL=http://localhost:8080
 ```
+
 ---
 ## **Contributing**
 Contributions are welcome! If you have ideas for improvement, feel free to fork the repository and create a pull request.
@@ -157,6 +158,68 @@ Push to the branch (git push origin feature/AmazingFeature).
 
 Open a Pull Request.
 
+---
+
+## **ER Diagram**
+```mermaid
+erDiagram
+    USER ||--o{ EXPENSE : "One user creates many expenses"
+    USER ||--o{ QUERY_LOG : "One user generates many queries"
+    USER ||--o{ MONTHLY_SUMMARY : "One user has many monthly summaries"
+
+    USER {
+        string id "🔑 Unique identifier"
+        string full_name "Full name of user"
+        string email "Email address (must be unique)"
+        string password "Encrypted password"
+        string role "User type: Admin, Staff, or Vendor"
+        string specialty "Area of expertise (optional)"
+        string phone_number "Contact number (optional)"
+        string avatar_url "Profile picture link (optional)"
+        string business_name "Company name (optional)"
+        string business_type "Type of business (optional)"
+        string business_address "Business location (optional)"
+        string preferred_language "Default: English"
+        boolean verified "Account verified status"
+        datetime created_at "Account creation date"
+        datetime updated_at "Last update date"
+    }
+
+    EXPENSE {
+        string id "🔑 Unique identifier"
+        string user_id "🔗 Links to User who created this"
+        decimal amount "Money spent or earned"
+        date date "Date of transaction"
+        string description "What was this expense for"
+        string category "Main category (e.g., Food, Travel)"
+        string subcategory "Specific type (optional)"
+        string type "Expense or Income"
+        string notes "Additional details (optional)"
+        string receipt_photo_url "Photo of receipt (optional)"
+        datetime created_at "When this was recorded"
+        datetime updated_at "Last modification date"
+    }
+
+    QUERY_LOG {
+        string id "🔑 Unique identifier"
+        string user_id "🔗 Links to User who asked"
+        string question "Question asked by user"
+        string sql_query "Database query generated"
+        integer usage_count "How many times used"
+        datetime created_at "First time asked"
+        datetime last_used_at "Most recent use"
+    }
+
+    MONTHLY_SUMMARY {
+        string id "🔑 Unique identifier"
+        string user_id "🔗 Links to User"
+        string category "Expense category"
+        decimal amount "Total amount for month"
+        string month "Which month and year"
+        datetime created_at "When summary was created"
+        datetime updated_at "Last update date"
+    }
+```
 ---
 ## **Acknowledgments**
 Thank you for checking out Track₹!
